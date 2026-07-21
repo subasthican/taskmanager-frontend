@@ -22,15 +22,16 @@ const TaskPage = () => {
     const fetchTasks = async () => {
         try {
         // const response = await axios.get(`${API_URL}?search=${search}`);
-        const response = await axios.get(API_URL,
-          {
-              params :{
-                search: search,
+        const response = await axios.post(
+            `${API_URL}/list`,
+            {
+                search,
                 category: filterCategory,
                 priority: filterPriority
             }
-          }
-        )
+        );
+
+
         setTasks(response.data);
         } catch (error) {
         console.error("Error fetching tasks:", error);
