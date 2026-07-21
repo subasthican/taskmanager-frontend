@@ -12,14 +12,25 @@ const TaskPage = () => {
     const [category, setCategory] = useState('General');
     const [priority, setPriority] = useState(PEROEITY.MEDIUM);
     const [search, setSearch] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
+    const [filterPriority, setFilterPriority] = useState('');
 
     useEffect(() => {
         fetchTasks();
-    }, []);
+    }, [search,filterCategory,filterPriority]);
 
     const fetchTasks = async () => {
         try {
-        const response = await axios.get(`${API_URL}?search=${search}`);
+        // const response = await axios.get(`${API_URL}?search=${search}`);
+        const response = await axios.get(API_URL,
+          {
+              params :{
+                search: search,
+                category: filterCategory,
+                priority: filterPriority
+            }
+          }
+        )
         setTasks(response.data);
         } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -83,7 +94,7 @@ const TaskPage = () => {
         <div className="max-w-xl mx-auto my-10 p-8 font-sans bg-gray-50 text-gray-800 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Task Manager</h1>
 
-        <div className='flex m-6'>
+        <div className='flex mb-5'>
             <input 
             type="text"
             placeholder='search task'
@@ -98,8 +109,8 @@ const TaskPage = () => {
             </button>
             
         </div>
-        {/* Form with Category Selector */}
-        <form onSubmit={addTask} className="flex mb-8">
+        
+        <form onSubmit={addTask} className="flex mb-5">
             <select 
             value={category} 
             onChange={(e) => setCategory(e.target.value)}
@@ -132,10 +143,35 @@ const TaskPage = () => {
             className="flex-grow p-3 mr-3 border border-gray-300 rounded text-base bg-white focus:outline-none focus:border-blue-500"
             />
             <button type="submit" className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded transition-colors">
-            Add
+            Add Task
             </button>
         </form>
 
+        <select
+            value={filterCategory}
+            onChange={(e)=>setFilterCategory(e.target.value)}
+            className="p-3 border rounded mb-4"
+        >
+            <option value="">All Categories</option>
+            <option value="General">General</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Urgent">Urgent</option>
+
+        </select>
+
+        <select
+            value={filterPriority}
+            onChange={(e)=>setFilterPriority(e.target.value)}
+            className="p-3 border rounded mx-3"
+        >
+            <option value="">All Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+
+        </select>
+        
         <ul className="list-none p-0">
             {tasks.map(task => (
             <li key={task._id} className="flex items-center mb-3 p-4 bg-white border border-gray-200 rounded-md shadow-sm">
