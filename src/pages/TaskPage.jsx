@@ -11,6 +11,7 @@ const TaskPage = () => {
     const [editTaskTitle, setEditTaskTitle] = useState('');
     const [category, setCategory] = useState('General');
     const [priority, setPriority] = useState(PEROEITY.MEDIUM);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         fetchTasks();
@@ -18,12 +19,14 @@ const TaskPage = () => {
 
     const fetchTasks = async () => {
         try {
-        const response = await axios.get(API_URL);
+        const response = await axios.get(`${API_URL}?search=${search}`);
         setTasks(response.data);
         } catch (error) {
         console.error("Error fetching tasks:", error);
         }
     };
+
+
 
     const addTask = async (e) => {
         e.preventDefault();
@@ -79,7 +82,22 @@ const TaskPage = () => {
     return (
         <div className="max-w-xl mx-auto my-10 p-8 font-sans bg-gray-50 text-gray-800 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Task Manager</h1>
-        
+
+        <div className='flex m-6'>
+            <input 
+            type="text"
+            placeholder='search task'
+            value={search}
+            onChange={(e)=>setSearch(e.target.value)}
+            className="flex-grow p-3 mr-3 border border-gray-300 rounded"
+            />
+
+            <button onClick={fetchTasks}
+            className="px-5 py-3 bg-green-600 text-white rounded">
+                search
+            </button>
+            
+        </div>
         {/* Form with Category Selector */}
         <form onSubmit={addTask} className="flex mb-8">
             <select 
