@@ -15,10 +15,13 @@ const TaskPage = () => {
     const [filterCategory, setFilterCategory] = useState('');
     const [filterPriority, setFilterPriority] = useState('');
     const [showAddModel, setShowAddModel] = useState(false);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalPage, setTotalPage] = useState(1);
 
     useEffect(() => {
         fetchTasks();
-    }, [search,filterCategory,filterPriority]);
+    }, [search,filterCategory,filterPriority,page]);
 
     const fetchTasks = async () => {
         try {
@@ -28,12 +31,16 @@ const TaskPage = () => {
             {
                 search,
                 category: filterCategory,
-                priority: filterPriority
+                priority: filterPriority,
+                page,
+                limit
+
             }
         );
 
 
-        setTasks(response.data);
+        setTasks(response.data.data.tasks);
+        setTotalPage(response.data.data.pagination.totalPage);
         } catch (error) {
         console.error("Error fetching tasks:", error);
         }
@@ -196,6 +203,25 @@ const TaskPage = () => {
             </li>
             ))}
         </ul>
+        <div className='flex justify-center gap-3 mt-5'>
+            <button
+            disabled = {page === 1}
+            onClick={()=>setPage(page-1)}
+            className='px-4 py-2 bg-gray-500 text-white rounded'
+            >
+                previous
+            </button>
+
+            <span>{page} / {totalPage}</span>
+
+            <button
+            disabled={page===totalPage}
+            onClick={()=>setPage(page+1)}
+            className='px-4 py-2 bg-blue-600 text-white rounded'
+            >
+                next
+            </button>
+        </div>
         {showAddModel && (
             <div className='fixed inset-0 bg-black/50 flex items-center justify-center'>
                 <div className="bg-white p-6 rounded-lg w-[450px] shadow-lg">
