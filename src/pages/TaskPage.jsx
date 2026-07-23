@@ -14,6 +14,7 @@ const TaskPage = () => {
     const [search, setSearch] = useState('');
     const [filterCategory, setFilterCategory] = useState('');
     const [filterPriority, setFilterPriority] = useState('');
+    const [showAddModel, setShowAddModel] = useState(false);
 
     useEffect(() => {
         fetchTasks();
@@ -49,6 +50,9 @@ const TaskPage = () => {
         const response = await axios.post(API_URL, { title: newTaskTitle, category, priority });
         fetchTasks();
         setNewTaskTitle('');
+        setCategory('General');
+        setPriority(PEROEITY.MEDIUM);
+        setShowAddModel(false)
         } catch (error) {
         console.error("Error adding task:", error);
         }
@@ -111,42 +115,7 @@ const TaskPage = () => {
             
         </div>
         
-        <form onSubmit={addTask} className="flex mb-5">
-            <select 
-            value={category} 
-            onChange={(e) => setCategory(e.target.value)}
-            className="p-3 border border-gray-300 rounded mr-3 bg-white"
-            >
-            <option value="General">General</option>
-            <option value="Work">Work</option>
-            <option value="Personal">Personal</option>
-            <option value="Urgent">Urgent</option>
-            </select>
-
-            <select 
-            value={priority}
-            onChange={(e)=>setPriority(e.target.value)}
-            className='p-3 border border-gray-500 rounded mr-3 bg-white'
-            >
-                {Object.values(PEROEITY).map((p)=>(
-                    <option key={p} value={p}>{p}</option>
-                ))}
-
-
-            </select>
-
-            
-            <input 
-            type="text" 
-            placeholder="Add a new task..." 
-            value={newTaskTitle} 
-            onChange={(e) => setNewTaskTitle(e.target.value)} 
-            className="flex-grow p-3 mr-3 border border-gray-300 rounded text-base bg-white focus:outline-none focus:border-blue-500"
-            />
-            <button type="submit" className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded transition-colors">
-            Add Task
-            </button>
-        </form>
+        
 
         <select
             value={filterCategory}
@@ -173,6 +142,14 @@ const TaskPage = () => {
 
         </select>
         
+        <button
+            type="button"
+            onClick={() => setShowAddModel(true)}
+            className="px-5 py-3 bg-blue-600 text-white rounded"
+        >
+            Add Task
+        </button>
+
         <ul className="list-none p-0">
             {tasks.map(task => (
             <li key={task._id} className="flex items-center mb-3 p-4 bg-white border border-gray-200 rounded-md shadow-sm">
@@ -219,6 +196,61 @@ const TaskPage = () => {
             </li>
             ))}
         </ul>
+        {showAddModel && (
+            <div className='fixed inset-0 bg-black/50 flex items-center justify-center'>
+                <div className="bg-white p-6 rounded-lg w-[450px] shadow-lg">
+                    <h2 className='text-2xl font-bold mb-5'>Add new task</h2>
+
+                    <form onSubmit={addTask}>
+                        <select
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                            className='w-full p-3 border rounded mb-3'
+                        >
+                            <option value="General">General</option>
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                        <select 
+                            value={priority}
+                            onChange={(e)=>setPriority(e.target.value)}
+                            className='w-full p-3 border rounded mb-3'
+                        >
+                            {Object.values(PEROEITY).map((p) => (
+                                <option key={p} value={p}>
+                                    {p}
+                                </option>
+                            ))}
+                        </select>
+                        <input
+                        type='text'
+                        placeholder='Task title'
+                        value={newTaskTitle}
+                        onChange={(e) => setNewTaskTitle(e.target.value)}
+                        className='w-full p-3 border rounded mb-5'
+                        />
+                            <div className='flex justify-end gap-3'>
+                                <button
+                                type='button'
+                                onClick={()=>setShowAddModel(false)}
+                                className='px-5 py-2 bg-gray-500 text-white rounded'
+                                >
+                                    cancel
+                                </button>
+                                <button
+                                type='submit'
+                                className="px-5 py-2 bg-blue-600 text-white rounded"
+                                >
+                                        Add Task
+                                </button>
+                            </div>
+                        
+                    </form>
+                </div>
+
+            </div>
+        )}
         </div>
     );
     };
