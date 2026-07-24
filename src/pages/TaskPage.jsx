@@ -114,12 +114,6 @@ const TaskPage = () => {
             onChange={(e)=>setSearch(e.target.value)}
             className="flex-grow p-3 mr-3 border border-gray-300 rounded"
             />
-
-            <button onClick={fetchTasks}
-            className="px-5 py-3 bg-green-600 text-white rounded">
-                search
-            </button>
-            
         </div>
         {/* Form with Category Selector */}
         <form onSubmit={addTask} className="flex mb-8">
