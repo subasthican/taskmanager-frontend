@@ -12,15 +12,38 @@ const TaskPage = () => {
     const [category, setCategory] = useState('General');
     const [priority, setPriority] = useState(PEROEITY.MEDIUM);
     const [search, setSearch] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
+    const [filterPriority, setFilterPriority] = useState('');
+    const [showAddModel, setShowAddModel] = useState(false);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [totalPage, setTotalPage] = useState(1);
+    const [timeout, setTimeout] = useState();
 
     useEffect(() => {
-        fetchTasks();
-    }, []);
+        const timer = window.setTimeout(()=>{
+            fetchTasks();
+        },500);
+        return ()=> window.clearTimeout(timer)
+    }, [search,filterCategory,filterPriority,page,limit]);
 
     const fetchTasks = async () => {
         try {
-        const response = await axios.get(`${API_URL}?search=${search}`);
-        setTasks(response.data);
+        // const response = await axios.get(`${API_URL}?search=${search}`);
+        const response = await axios.post(
+            `${API_URL}/list`,
+            {
+                search,
+                category: filterCategory,
+                priority: filterPriority,
+                page,
+                limit
+            }
+        );
+
+
+        setTasks(response.data.data.tasks);
+        setTotalPage(response.data.data.pagination.totalPage);
         } catch (error) {
         console.error("Error fetching tasks:", error);
         }
