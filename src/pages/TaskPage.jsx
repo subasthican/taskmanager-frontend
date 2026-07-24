@@ -18,10 +18,14 @@ const TaskPage = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [totalPage, setTotalPage] = useState(1);
+    const [timeout, setTimeout] = useState();
 
     useEffect(() => {
-        fetchTasks();
-    }, [search,filterCategory,filterPriority,page]);
+        const timer = window.setTimeout(()=>{
+            fetchTasks();
+        },500);
+        return ()=> window.clearTimeout(timer)
+    }, [search,filterCategory,filterPriority,page,limit]);
 
     const fetchTasks = async () => {
         try {
